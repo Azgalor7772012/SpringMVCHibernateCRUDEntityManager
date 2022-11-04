@@ -88,7 +88,7 @@ public class SpringConfig implements WebMvcConfigurer {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("allDirectories");
+        sessionFactory.setPackagesToScan("allDirectories.models");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;

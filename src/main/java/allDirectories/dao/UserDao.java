@@ -1,16 +1,17 @@
 package allDirectories.dao;
 
 import allDirectories.models.User;
-
 import java.util.List;
 
 public interface UserDao {
 
-    public List<User> show();
+     List<User> show();
 
-    public void delete();
+     void delete(int id);
 
-    public void add();
+     void add(User user);
 
-    public void update();
+     void update(int id, User user);
+
+     User get(int id);
 }

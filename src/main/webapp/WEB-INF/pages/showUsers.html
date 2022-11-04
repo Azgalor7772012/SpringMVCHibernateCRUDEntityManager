@@ -5,11 +5,23 @@
     <title>Show all Users</title>
 </head>
 <body>
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Person</th>
+        <th>Year of birth</th>
+    </tr>
+    <tr th:each="person : ${people}">
+        <td th:text="${person.getId()}">Ячейка 4</td>
+        <td> <a th:href="@{/{id}/edit (id=${person.getId()})}" th:text="${person.getName()}">user</a></td>
+        <td th:text="${person.getAge()}">Ячейка 3</td>
+    </tr>
+</table>
 
-<div th:each="person : ${people}">
-  <a th:href="@{/people/{id}(id=${person.getId()})}"
-     th:text="${person.getName() + ', ' + person.getAge()}">user</a>
-</div>
+<form th:method="GET" th:action="new" th:object="${user}">
+    <input type="submit" value="Create user"/>
+</form>
+
 
 </body>
 </html>
