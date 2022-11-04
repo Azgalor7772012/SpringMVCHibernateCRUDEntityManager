@@ -2,88 +2,71 @@ package allDirectories.dao;
 
 import allDirectories.models.User;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 
 @Component
 public class UserDaoHibernate implements UserDao {
 
-    private final SessionFactory sessionFactory;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
-    public UserDaoHibernate(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public UserDaoHibernate(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
+
+
+
 
     //    @Transactional Почему-то с транзакшионал не работает. Почему?
     public List<User> show() {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        List<User> users = session.createQuery("SELECT p from User p", User.class).getResultList();
-        session.getTransaction().commit();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        List<User> users = entityManager.createQuery("SELECT p from User p", User.class).getResultList();
+        entityManager.getTransaction().commit();
+
         return users;
     }
 
     public void delete(int id) {
-        Transaction tx = null;
-        try(Session session = sessionFactory.openSession()) {
-            tx = session.beginTransaction();
-            User user = session.get(User.class, id);
-            session.delete(user);
-            session.getTransaction().commit();
-        } catch(Exception e) {
-            if(tx != null) {
-                tx.rollback();
-            }
-            e.printStackTrace();
-        }
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        User user = entityManager.find(User.class, id);
+        entityManager.remove(user);entityManager.getTransaction().commit();
+
     }
 
 
     public void add(User user) {
-        Transaction tx = null;
-       try(Session session = sessionFactory.openSession()) {
-           tx = session.beginTransaction();
-           session.save(user);
-
-           session.getTransaction().commit();
-       } catch (Exception e) {
-           if(tx != null) {
-               tx.rollback();
-           }
-           e.printStackTrace();
-       }
-
-
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.persist(user);
+        entityManager.getTransaction().commit();
     }
 
     public void update(int id, User user) {
-        Transaction tx = null;
-        try (Session session = sessionFactory.openSession()) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
 
-            tx = session.beginTransaction();
-            User user1 = session.get(User.class, id);
-            user1.setAge(user.getAge());
-            user1.setName(user.getName());
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            if(tx != null) {
-                tx.rollback();
-            }
-        }
+        User updatedUser = entityManager.find(User.class, id);
+        updatedUser.setName(user.getName());
+        updatedUser.setAge(user.getAge());
 
-
+        entityManager.getTransaction().commit();
     }
 
     @Override
     public User get(int id) {
-        Session session = sessionFactory.openSession();
-        return session.get(User.class, id);
-
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        return  entityManager.find(User.class, id);
 
     }
 }
