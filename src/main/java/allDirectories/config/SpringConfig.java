@@ -76,7 +76,7 @@ public class SpringConfig implements WebMvcConfigurer {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("allDirectories");
+        em.setPackagesToScan("allDirectories.models");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
