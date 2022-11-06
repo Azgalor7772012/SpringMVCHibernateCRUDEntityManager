@@ -42,7 +42,6 @@ public class UserDaoHibernate implements UserDao {
     }
     @Transactional
     public User get(int id) {
-
         return  entityManager.find(User.class, id);
 
     }
