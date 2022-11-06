@@ -1,7 +1,7 @@
 package allDirectories.controllers;
 
-import allDirectories.dao.UserDaoHibernate;
 import allDirectories.models.User;
+import allDirectories.service.UserServiceHibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
-
-    private final UserDaoHibernate userDao;
+   private final UserServiceHibernate userServiceHibernate;
 
     @Autowired
-    public UserController(UserDaoHibernate userDao) {
-        this.userDao = userDao;
+    public UserController(UserServiceHibernate userServiceHibernate) {
+        this.userServiceHibernate = userServiceHibernate;
     }
+
 
     @GetMapping("/showUsers")
     public String showUsers(Model model) {
-        model.addAttribute("people", userDao.show());
+        model.addAttribute("people", userServiceHibernate.show());
         return "showUsers";
     }
 
@@ -31,7 +31,7 @@ public class UserController {
 
     @PostMapping("/new")
     public String createUser(@ModelAttribute("user") User user) {
-        userDao.add(user);
+        userServiceHibernate.add(user);
         return "redirect:/showUsers";
     }
 
@@ -49,25 +49,25 @@ public class UserController {
 
     @GetMapping("showUser/{id}")
     public String id(@PathVariable int id, Model model) {
-        model.addAttribute("user", userDao.get(id));
+        model.addAttribute("user", userServiceHibernate.get(id));
         return "user";
     }
 
     @GetMapping("{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("user", userDao.get(id));
+        model.addAttribute("user", userServiceHibernate.get(id));
         return "edit";
     }
     @PatchMapping("/{id}")
     public String patchEdit(@ModelAttribute("user") User user,
                             @PathVariable("id") int id) {
-        userDao.update(id, user);
+        userServiceHibernate.update(id, user);
         return "redirect:/showUsers";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        userDao.delete(id);
+        userServiceHibernate.delete(id);
         return "redirect:/showUsers";
     }
 }
